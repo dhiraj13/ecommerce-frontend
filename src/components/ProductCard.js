@@ -1,6 +1,6 @@
 import React from "react";
-import RatingStars from "react-rating-stars-component";
 import { Link } from "react-router-dom";
+import RatingStars from "react-rating-stars-component";
 
 const ProductCard = () => {
   return (
@@ -27,7 +27,7 @@ const ProductCard = () => {
           <RatingStars
             count={5}
             size={24}
-            value="3"
+            value={4}
             edit={false}
             activeColor="#ffd700"
           />
