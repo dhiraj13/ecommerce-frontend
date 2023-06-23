@@ -10,21 +10,20 @@ import addcart from "../images/add-cart.svg";
 import view from "../images/view.svg";
 const ProductCard = (props) => {
   const { grid } = props;
-  console.log(grid);
   let location = useLocation();
 
   return (
     <>
       <div
         className={` ${
-          location.pathname == "/product" ? `gr-${grid}` : "col-3"
+          location.pathname === "/product" ? `gr-${grid}` : "col-3"
         } `}
       >
         <Link
           to={`${
-            location.pathname == "/"
+            location.pathname === "/"
               ? "/product/:id"
-              : location.pathname == "/product/:id"
+              : location.pathname === "/product/:id"
               ? "/product/:id"
               : ":id"
           }`}
@@ -76,14 +75,14 @@ const ProductCard = (props) => {
       </div>
       <div
         className={` ${
-          location.pathname == "/product" ? `gr-${grid}` : "col-3"
+          location.pathname === "/product" ? `gr-${grid}` : "col-3"
         } `}
       >
         <Link
           to={`${
-            location.pathname == "/"
+            location.pathname === "/"
               ? "/product/:id"
-              : location.pathname == "/product/:id"
+              : location.pathname === "/product/:id"
               ? "/product/:id"
               : ":id"
           }`}
