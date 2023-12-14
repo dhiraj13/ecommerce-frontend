@@ -17,7 +17,9 @@ const Signup = () => {
   let schema = Yup.object().shape({
     firstname: Yup.string().required("First Name is Required"),
     lastname: Yup.string().required("Last Name is Required"),
-    email: Yup.string().nullable().email("Email Should be Valid"),
+    email: Yup.string()
+      .email("Email Should be Valid")
+      .required("Email Address is Required"),
     mobile: Yup.string().required("Mobile No is Required"),
     password: Yup.string().required("Password is Required"),
   });
