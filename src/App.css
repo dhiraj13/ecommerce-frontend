@@ -453,9 +453,7 @@ footer .input-group-text {
 }
 .gr-12 .product-card .product-image {
   width: 270px;
-}
-.gr-12 .product-card .product-image {
-  height: auto;
+  height: 200px;
 }
 .gr-12 .action-bar {
   top: 17%;

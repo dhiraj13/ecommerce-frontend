@@ -1,4 +1,4 @@
-const { default: api } = require("@api/api");
+import api from "api/api";
 
 const register = (userData) => {
   return api.post("user/register", userData).then((res) => res.data);

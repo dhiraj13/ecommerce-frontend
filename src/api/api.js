@@ -11,9 +11,9 @@ const axiosInstance = axios.create(axiosParams);
 axiosInstance.interceptors.request.use(
   (config) => {
     config.headers = config.headers ?? {};
-    const user = localStorage.getItem("user");
-    const userObject = JSON.parse(user);
-    const token = userObject ? userObject.token : "";
+    const token = localStorage.getItem("token")
+      ? localStorage.getItem("token")
+      : "";
     const auth = token ? `Bearer ${token}` : "";
     config.headers.Authorization = auth;
     return config;
