@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import Meta from "../components/Meta";
-import BreadCrumb from "../components/Breadcrumb";
-import BlogCard from "../components/BlogCard";
+import dayjs from "dayjs";
+import Meta from "components/Meta";
+import BreadCrumb from "components/Breadcrumb";
+import BlogCard from "components/BlogCard";
+import { useDispatch, useSelector } from "react-redux";
+import { getBlogs } from "@features/blog/blogSlice";
 
 const Blog = () => {
+  const blogState = useSelector((state) => state.blog);
+  const { blogs } = blogState;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const fetchBlogs = () => {
+    dispatch(getBlogs());
+  };
+
   return (
     <>
       <Meta title="Blogs" />
@@ -27,18 +43,19 @@ const Blog = () => {
             </div>
             <div className="col-9">
               <div className="row">
-                <div className="col-6 mb-3">
-                  <BlogCard />
-                </div>
-                <div className="col-6 mb-3">
-                  <BlogCard />
-                </div>
-                <div className="col-6 mb-3">
-                  <BlogCard />
-                </div>
-                <div className="col-6 mb-3">
-                  <BlogCard />
-                </div>
+                {blogs?.map((blog, index) => (
+                  <div className="col-6 mb-3" key={index}>
+                    <BlogCard
+                      id={blog?._id}
+                      title={blog?.title}
+                      description={blog?.description}
+                      image={blog?.images[0]?.url}
+                      date={dayjs(new Date(blog?.createdAt)).format(
+                        "d MMM, YYYY"
+                      )}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>

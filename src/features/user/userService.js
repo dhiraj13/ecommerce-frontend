@@ -8,7 +8,12 @@ const login = (userData) => {
   return api.post("user/login", userData).then((res) => res.data);
 };
 
+const getUserWishlist = () => {
+  return api.get("user/wishlist").then((res) => res.data);
+};
+
 export const authService = {
   register,
   login,
+  getUserWishlist,
 };
