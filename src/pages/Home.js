@@ -1,13 +1,49 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Marquee from "react-fast-marquee";
-import BlogCard from "../components/BlogCard";
-import ProductCard from "../components/ProductCard";
-import SpecialProduct from "../components/SpecialProduct";
-import Container from "../components/Container";
-import { services } from "../utils/Data";
+import React, { useEffect } from "react"
+import { Link } from "react-router-dom"
+import Marquee from "react-fast-marquee"
+import BlogCard from "components/BlogCard"
+import ProductCard from "components/ProductCard"
+import SpecialProduct from "components/SpecialProduct"
+import Container from "components/Container"
+import { services } from "utils/Data"
+import { useDispatch, useSelector } from "react-redux"
+import { getBlogs } from "@features/blog/blogSlice"
+import { getProducts } from "@features/products/productSlice"
+import { If, Then } from "react-if"
+import ReactStars from "react-rating-stars-component"
+import prodcompare from "@images/prodcompare.svg"
+import wish from "@images/wish.svg"
+import watch from "@images/watch.jpg"
+import watch2 from "@images/watch-1.jpg"
+import addcart from "@images/add-cart.svg"
+import view from "@images/view.svg"
+import { addToWishlist } from "@features/products/productSlice"
 
 const Home = () => {
+  const blogState = useSelector((state) => state.blog)
+  const productState = useSelector((state) => state.product)
+
+  const { blogs } = blogState
+  const { products } = productState
+
+  const dispatch = useDispatch()
+  useEffect(() => {
+    fetchBlogs()
+    fetchProducts()
+  }, [])
+
+  const fetchBlogs = () => {
+    dispatch(getBlogs())
+  }
+
+  const fetchProducts = () => {
+    dispatch(getProducts())
+  }
+
+  const handleAddToWishlist = (id) => {
+    dispatch(addToWishlist(id))
+  }
+
   return (
     <>
       <Container class1="home-wrapper-1 py-5">
@@ -102,7 +138,7 @@ const Home = () => {
                       <p className="mb-0">{i.tagline}</p>
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
           </div>
@@ -253,9 +289,27 @@ const Home = () => {
             <h3 className="section-heading">Special Products</h3>
           </div>
           <div className="row">
-            <SpecialProduct />
-            <SpecialProduct />
-            <SpecialProduct />
+            {products &&
+              products?.map((product, index) => (
+                <If condition={product?.tags === "special"}>
+                  <Then>
+                    <SpecialProduct
+                      key={index}
+                      brand={product?.brand}
+                      image={
+                        product?.images?.[0]?.url
+                          ? product?.images?.[0]?.url
+                          : watch
+                      }
+                      price={product?.price}
+                      quantity={product?.quantity}
+                      sold={product?.sold}
+                      title={product?.title}
+                      totalrating={product?.totalrating?.toString()}
+                    />
+                  </Then>
+                </If>
+              ))}
           </div>
         </div>
       </Container>
@@ -266,10 +320,70 @@ const Home = () => {
           </div>
         </div>
         <div className="row">
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+          {products &&
+            products?.map((product, index) => (
+              <If condition={product?.tags === "popular"}>
+                <Then>
+                  <div key={index} className="col-3">
+                    <Link className="product-card position-relative h-100">
+                      <div className="wishlist-icon position-absolute">
+                        <button
+                          className="border-0 bg-transparent"
+                          onClick={(e) => handleAddToWishlist(product?._id)}
+                        >
+                          <img src={wish} alt="wishlist" />
+                        </button>
+                      </div>
+                      <div className="product-image">
+                        <img
+                          src={
+                            product?.images?.[0]?.url
+                              ? product?.images?.[0]?.url
+                              : watch
+                          }
+                          className="img-fluid w-100 h-100"
+                          alt="product"
+                        />
+                        <img
+                          src={
+                            product?.images?.[1] && product?.images?.[1]?.url
+                              ? product?.images?.[1]?.url
+                              : watch2
+                          }
+                          className="img-fluid w-100 h-100"
+                          alt="second product"
+                        />
+                      </div>
+                      <div className="product-details mt-1">
+                        <h6 className="brand">{product?.brand}</h6>
+                        <h5 className="product-title">{product?.title}</h5>
+                        <ReactStars
+                          count={5}
+                          size={24}
+                          value={product?.totalrating}
+                          edit={false}
+                          activeColor="#ffd700"
+                        />
+                        <p className="price">$ {product?.price}</p>
+                      </div>
+                      <div className="action-bar position-absolute">
+                        <div className="d-flex flex-column gap-15">
+                          <button className="border-0 bg-transparent">
+                            <img src={prodcompare} alt="compare" />
+                          </button>
+                          <button className="border-0 bg-transparent">
+                            <img src={view} alt="view" />
+                          </button>
+                          <button className="border-0 bg-transparent">
+                            <img src={addcart} alt="addcart" />
+                          </button>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </Then>
+              </If>
+            ))}
         </div>
       </Container>
       <Container class1="marque-wrapper home-wrapper-2 py-5">
@@ -328,7 +442,7 @@ const Home = () => {
         </div>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
