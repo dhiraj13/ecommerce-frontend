@@ -1,22 +1,22 @@
-import React from "react";
-import ReactStars from "react-rating-stars-component";
-import { Link, useLocation } from "react-router-dom";
-import prodcompare from "@images/prodcompare.svg";
-import wish from "@images/wish.svg";
-import watch from "@images/watch.jpg";
-import watch2 from "@images/watch-1.jpg";
-import addcart from "@images/add-cart.svg";
-import view from "@images/view.svg";
-import { useDispatch } from "react-redux";
-import { addToWishlist } from "@features/products/productSlice";
+import React from "react"
+import ReactStars from "react-rating-stars-component"
+import { Link, useLocation } from "react-router-dom"
+import prodcompare from "@images/prodcompare.svg"
+import wish from "@images/wish.svg"
+import watch from "@images/watch.jpg"
+import watch2 from "@images/watch-1.jpg"
+import addcart from "@images/add-cart.svg"
+import view from "@images/view.svg"
+import { useDispatch } from "react-redux"
+import { addToWishlist } from "@features/products/productSlice"
 const ProductCard = (props) => {
-  const { grid, data } = props;
-  let location = useLocation();
-  const dispatch = useDispatch();
+  const { grid, data } = props
+  let location = useLocation()
+  const dispatch = useDispatch()
 
   const handleAddToWishlist = (id) => {
-    dispatch(addToWishlist(id));
-  };
+    dispatch(addToWishlist(id))
+  }
 
   return (
     <>
@@ -27,16 +27,7 @@ const ProductCard = (props) => {
             location.pathname === "/product" ? `gr-${grid}` : "col-3"
           } `}
         >
-          <Link
-            // to={`${
-            //   location.pathname === "/"
-            //     ? "/product/:id"
-            //     : location.pathname === "/product/:id"
-            //     ? "/product/:id"
-            //     : ":id"
-            // }`}
-            className="product-card position-relative h-100"
-          >
+          <div className="product-card position-relative h-100">
             <div className="wishlist-icon position-absolute">
               <button
                 className="border-0 bg-transparent"
@@ -82,19 +73,22 @@ const ProductCard = (props) => {
                 <button className="border-0 bg-transparent">
                   <img src={prodcompare} alt="compare" />
                 </button>
-                <button className="border-0 bg-transparent">
+                <Link
+                  to={`/product/${item?._id}`}
+                  className="border-0 bg-transparent"
+                >
                   <img src={view} alt="view" />
-                </button>
+                </Link>
                 <button className="border-0 bg-transparent">
                   <img src={addcart} alt="addcart" />
                 </button>
               </div>
             </div>
-          </Link>
+          </div>
         </div>
       ))}
     </>
-  );
-};
+  )
+}
 
-export default ProductCard;
+export default ProductCard

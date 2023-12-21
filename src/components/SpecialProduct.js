@@ -4,8 +4,7 @@ import { Link } from "react-router-dom"
 import styles from "./SpecialProduct.module.css"
 
 const SpecialProduct = (props) => {
-  const { brand, image, price, quantity, sold, title, totalrating } = props
-  console.log(quantity / quantity + sold * 100)
+  const { brand, id, image, price, quantity, sold, title, totalrating } = props
 
   return (
     <div className="col-6 mb-3">
@@ -61,7 +60,9 @@ const SpecialProduct = (props) => {
                 ></div>
               </div>
             </div>
-            <Link className="button">Add to Cart</Link>
+            <Link className="button" to={`/product/${id}`}>
+              View
+            </Link>
           </div>
         </div>
       </div>

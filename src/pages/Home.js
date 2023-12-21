@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Marquee from "react-fast-marquee"
 import BlogCard from "components/BlogCard"
 import ProductCard from "components/ProductCard"
@@ -20,6 +20,7 @@ import view from "@images/view.svg"
 import { addToWishlist } from "@features/products/productSlice"
 
 const Home = () => {
+  const navigate = useNavigate()
   const blogState = useSelector((state) => state.blog)
   const productState = useSelector((state) => state.product)
 
@@ -218,7 +219,7 @@ const Home = () => {
               <If condition={product?.tags === "featured"}>
                 <Then>
                   <div key={index} className="col-3">
-                    <Link className="product-card position-relative h-100">
+                    <div className="product-card position-relative h-100">
                       <div className="wishlist-icon position-absolute">
                         <button
                           className="border-0 bg-transparent"
@@ -265,14 +266,20 @@ const Home = () => {
                             <img src={prodcompare} alt="compare" />
                           </button>
                           <button className="border-0 bg-transparent">
-                            <img src={view} alt="view" />
+                            <img
+                              src={view}
+                              alt="view"
+                              onClick={() =>
+                                navigate(`/product/${product?._id}`)
+                              }
+                            />
                           </button>
                           <button className="border-0 bg-transparent">
                             <img src={addcart} alt="addcart" />
                           </button>
                         </div>
                       </div>
-                    </Link>
+                    </div>
                   </div>
                 </Then>
               </If>
@@ -356,6 +363,7 @@ const Home = () => {
                     <SpecialProduct
                       key={index}
                       brand={product?.brand}
+                      id={product?._id}
                       image={
                         product?.images?.[0]?.url
                           ? product?.images?.[0]?.url
@@ -385,7 +393,7 @@ const Home = () => {
               <If condition={product?.tags === "popular"}>
                 <Then>
                   <div key={index} className="col-3">
-                    <Link className="product-card position-relative h-100">
+                    <div className="product-card position-relative h-100">
                       <div className="wishlist-icon position-absolute">
                         <button
                           className="border-0 bg-transparent"
@@ -432,14 +440,20 @@ const Home = () => {
                             <img src={prodcompare} alt="compare" />
                           </button>
                           <button className="border-0 bg-transparent">
-                            <img src={view} alt="view" />
+                            <img
+                              src={view}
+                              alt="view"
+                              onClick={() =>
+                                navigate(`/product/${product?._id}`)
+                              }
+                            />
                           </button>
                           <button className="border-0 bg-transparent">
                             <img src={addcart} alt="addcart" />
                           </button>
                         </div>
                       </div>
-                    </Link>
+                    </div>
                   </div>
                 </Then>
               </If>

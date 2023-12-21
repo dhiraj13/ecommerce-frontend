@@ -1,35 +1,49 @@
-import React, { useState } from "react";
-import ReactStars from "react-rating-stars-component";
-import Breadcrumb from "../components/Breadcrumb";
-import Meta from "../components/Meta";
-import ProductCard from "../components/ProductCard";
-import ReactImageZoom from "react-image-zoom";
-import Color from "../components/Color";
-import { TbGitCompare } from "react-icons/tb";
-import { AiOutlineHeart } from "react-icons/ai";
-import { Link } from "react-router-dom";
-import watch from "../images/watch.jpg";
-import Container from "../components/Container";
+import React, { useEffect, useState } from "react"
+import ReactStars from "react-rating-stars-component"
+import Breadcrumb from "components/Breadcrumb"
+import Meta from "components/Meta"
+import ProductCard from "components/ProductCard"
+import ReactImageZoom from "react-image-zoom"
+import Color from "components/Color"
+import { TbGitCompare } from "react-icons/tb"
+import { AiOutlineHeart } from "react-icons/ai"
+import { Link, useParams } from "react-router-dom"
+import watch from "images/watch.jpg"
+import Container from "components/Container"
+import { useDispatch, useSelector } from "react-redux"
+import { getSingleProduct } from "@features/products/productSlice"
+
 const SingleProduct = () => {
+  const { id } = useParams()
+  const dispatch = useDispatch()
+  const productState = useSelector((state) => state.product)
+  const { product } = productState
+
+  useEffect(() => {
+    dispatch(getSingleProduct(id))
+  }, [id, dispatch])
+
   const props = {
     width: 594,
     height: 600,
     zoomWidth: 600,
 
-    img: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg",
-  };
+    img: product?.images?.[0]?.url
+      ? product.images[0].url
+      : "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg",
+  }
 
-  const [orderedProduct, setorderedProduct] = useState(true);
+  const [orderedProduct, setorderedProduct] = useState(true)
   const copyToClipboard = (text) => {
-    console.log("text", text);
-    var textField = document.createElement("textarea");
-    textField.innerText = text;
-    document.body.appendChild(textField);
-    textField.select();
-    document.execCommand("copy");
-    textField.remove();
-  };
-  const closeModal = () => {};
+    console.log("text", text)
+    var textField = document.createElement("textarea")
+    textField.innerText = text
+    document.body.appendChild(textField)
+    textField.select()
+    document.execCommand("copy")
+    textField.remove()
+  }
+  const closeModal = () => {}
   return (
     <>
       <Meta title={"Product Name"} />
@@ -43,50 +57,25 @@ const SingleProduct = () => {
               </div>
             </div>
             <div className="other-product-images d-flex flex-wrap gap-15">
-              <div>
-                <img
-                  src="https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-                  className="img-fluid"
-                  alt=""
-                />
-              </div>
-              <div>
-                <img
-                  src="https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-                  className="img-fluid"
-                  alt=""
-                />
-              </div>
-              <div>
-                <img
-                  src="https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-                  className="img-fluid"
-                  alt=""
-                />
-              </div>
-              <div>
-                <img
-                  src="https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-                  className="img-fluid"
-                  alt=""
-                />
-              </div>
+              {product?.images?.map((image, index) => (
+                <div key={index}>
+                  <img src={image?.url} className="img-fluid" alt="" />
+                </div>
+              ))}
             </div>
           </div>
           <div className="col-6">
             <div className="main-product-details">
               <div className="border-bottom">
-                <h3 className="title">
-                  Kids Headphones Bulk 10 Pack Multi Colored For Students
-                </h3>
+                <h3 className="title">{product?.title}</h3>
               </div>
               <div className="border-bottom py-3">
-                <p className="price">$ 100</p>
+                <p className="price">$ {product?.price}</p>
                 <div className="d-flex align-items-center gap-10">
                   <ReactStars
                     count={5}
                     size={24}
-                    value={4}
+                    value={product?.totalrating.toString()}
                     edit={false}
                     activeColor="#ffd700"
                   />
@@ -103,15 +92,15 @@ const SingleProduct = () => {
                 </div>
                 <div className="d-flex gap-10 align-items-center my-2">
                   <h3 className="product-heading">Brand :</h3>
-                  <p className="product-data">Havells</p>
+                  <p className="product-data">{product?.brand}</p>
                 </div>
                 <div className="d-flex gap-10 align-items-center my-2">
                   <h3 className="product-heading">Category :</h3>
-                  <p className="product-data">Watch</p>
+                  <p className="product-data">{product?.category}</p>
                 </div>
                 <div className="d-flex gap-10 align-items-center my-2">
                   <h3 className="product-heading">Tags :</h3>
-                  <p className="product-data">Watch</p>
+                  <p className="product-data">{product?.tags}</p>
                 </div>
                 <div className="d-flex gap-10 align-items-center my-2">
                   <h3 className="product-heading">Availablity :</h3>
@@ -188,9 +177,7 @@ const SingleProduct = () => {
                   <a
                     href="javascript:void(0);"
                     onClick={() => {
-                      copyToClipboard(
-                        "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-                      );
+                      copyToClipboard(window.location.href)
                     }}
                   >
                     Copy Product Link
@@ -201,17 +188,16 @@ const SingleProduct = () => {
           </div>
         </div>
       </Container>
-      <Container class1="description-wrapper py-5 home-wrapper-2">
+      <Container class1="description.toString()-wrapper py-5 home-wrapper-2">
         <div className="row">
           <div className="col-12">
             <h4>Description</h4>
             <div className="bg-white p-3">
-              <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Tenetur nisi similique illum aut perferendis voluptas, quisquam
-                obcaecati qui nobis officia. Voluptatibus in harum deleniti
-                labore maxime officia esse eos? Repellat?
-              </p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: product?.description.toString(),
+                }}
+              ></p>
             </div>
           </div>
         </div>
@@ -351,7 +337,7 @@ const SingleProduct = () => {
                 className="text-dark"
                 to="/product"
                 onClick={() => {
-                  closeModal();
+                  closeModal()
                 }}
               >
                 Continue To Shopping
@@ -361,7 +347,7 @@ const SingleProduct = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default SingleProduct;
+export default SingleProduct
