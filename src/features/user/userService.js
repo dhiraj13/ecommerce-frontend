@@ -16,9 +16,14 @@ const addToCart = (cartData) => {
   return api.post("user/cart", cartData).then((res) => res.data)
 }
 
+const getCart = () => {
+  return api.get("user/cart").then((res) => res.data)
+}
+
 export const authService = {
   register,
   login,
   getUserWishlist,
   addToCart,
+  getCart,
 }
