@@ -12,8 +12,14 @@ import watch from "images/watch.jpg"
 import Container from "components/Container"
 import { useDispatch, useSelector } from "react-redux"
 import { getSingleProduct } from "@features/products/productSlice"
+import { toast } from "react-toastify"
+import { addProductToCart } from "@features/user/userSlice"
 
 const SingleProduct = () => {
+  const [color, setColor] = useState(null)
+  const [quantity, setQuantity] = useState(1)
+  console.log(quantity)
+
   const { id } = useParams()
   const dispatch = useDispatch()
   const productState = useSelector((state) => state.product)
@@ -23,6 +29,21 @@ const SingleProduct = () => {
     dispatch(getSingleProduct(id))
   }, [id, dispatch])
 
+  const addToCart = () => {
+    if (color === null) {
+      toast.error("Please Choose Color")
+      return false
+    } else {
+      dispatch(
+        addProductToCart({
+          productId: product?._id,
+          quantity,
+          color,
+          price: product?.price,
+        })
+      )
+    }
+  }
   const props = {
     width: 594,
     height: 600,
@@ -106,7 +127,7 @@ const SingleProduct = () => {
                   <h3 className="product-heading">Availablity :</h3>
                   <p className="product-data">In Stock</p>
                 </div>
-                <div className="d-flex gap-10 flex-column mt-2 mb-3">
+                {/* <div className="d-flex gap-10 flex-column mt-2 mb-3">
                   <h3 className="product-heading">Size :</h3>
                   <div className="d-flex flex-wrap gap-15">
                     <span className="badge border border-1 bg-white text-dark border-secondary">
@@ -122,10 +143,10 @@ const SingleProduct = () => {
                       XXL
                     </span>
                   </div>
-                </div>
+                </div> */}
                 <div className="d-flex gap-10 flex-column mt-2 mb-3">
                   <h3 className="product-heading">Color :</h3>
-                  <Color />
+                  <Color setColor={setColor} colorData={product?.color} />
                 </div>
                 <div className="d-flex align-items-center gap-15 flex-row mt-2 mb-3">
                   <h3 className="product-heading">Quantity :</h3>
@@ -138,14 +159,17 @@ const SingleProduct = () => {
                       className="form-control"
                       style={{ width: "70px" }}
                       id=""
+                      onChange={(e) => setQuantity(e.target.value)}
+                      value={quantity}
                     />
                   </div>
                   <div className="d-flex align-items-center gap-30 ms-5">
                     <button
                       className="button border-0"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#staticBackdrop"
                       type="button"
+                      onClick={addToCart}
                     >
                       Add to Cart
                     </button>
