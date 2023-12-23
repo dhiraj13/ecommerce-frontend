@@ -20,10 +20,22 @@ const getCart = () => {
   return api.get("user/cart").then((res) => res.data)
 }
 
+const removeProductFromCart = (id) => {
+  return api.delete(`user/delete-cart-product/${id}`)
+}
+
+const updateProductQuantityFromCart = (cartDetail) => {
+  return api.put(
+    `update-cart-product-quantity/${cartDetail?.id}/${cartDetail?.quantity}`
+  )
+}
+
 export const authService = {
   register,
   login,
   getUserWishlist,
   addToCart,
   getCart,
+  removeProductFromCart,
+  updateProductQuantityFromCart,
 }

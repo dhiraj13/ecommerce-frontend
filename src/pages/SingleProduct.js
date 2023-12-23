@@ -7,27 +7,39 @@ import ReactImageZoom from "react-image-zoom"
 import Color from "components/Color"
 import { TbGitCompare } from "react-icons/tb"
 import { AiOutlineHeart } from "react-icons/ai"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import watch from "images/watch.jpg"
 import Container from "components/Container"
 import { useDispatch, useSelector } from "react-redux"
 import { getSingleProduct } from "@features/products/productSlice"
 import { toast } from "react-toastify"
-import { addProductToCart } from "@features/user/userSlice"
+import { addProductToCart, getUserCart } from "@features/user/userSlice"
 
 const SingleProduct = () => {
   const [color, setColor] = useState(null)
   const [quantity, setQuantity] = useState(1)
-  console.log(quantity)
+  const [alreadyAdded, setAlreadyAdded] = useState(false)
+  const navigate = useNavigate()
 
   const { id } = useParams()
   const dispatch = useDispatch()
   const productState = useSelector((state) => state.product)
   const { product } = productState
+  const authState = useSelector((state) => state.auth)
+  const { cartProducts } = authState
 
   useEffect(() => {
     dispatch(getSingleProduct(id))
+    dispatch(getUserCart())
   }, [id, dispatch])
+
+  useEffect(() => {
+    for (let index = 0; index < cartProducts?.length; index++) {
+      if (id === cartProducts?.[index]?.productId?._id) {
+        setAlreadyAdded(true)
+      }
+    }
+  }, [id, cartProducts])
 
   const addToCart = () => {
     if (color === null) {
@@ -42,6 +54,7 @@ const SingleProduct = () => {
           price: product?.price,
         })
       )
+      setAlreadyAdded(true)
     }
   }
   const props = {
@@ -144,36 +157,46 @@ const SingleProduct = () => {
                     </span>
                   </div>
                 </div> */}
-                <div className="d-flex gap-10 flex-column mt-2 mb-3">
-                  <h3 className="product-heading">Color :</h3>
-                  <Color setColor={setColor} colorData={product?.color} />
-                </div>
+                {!alreadyAdded && (
+                  <>
+                    <div className="d-flex gap-10 flex-column mt-2 mb-3">
+                      <h3 className="product-heading">Color :</h3>
+                      <Color setColor={setColor} colorData={product?.color} />
+                    </div>
+                  </>
+                )}
                 <div className="d-flex align-items-center gap-15 flex-row mt-2 mb-3">
-                  <h3 className="product-heading">Quantity :</h3>
-                  <div className="">
-                    <input
-                      type="number"
-                      name=""
-                      min={1}
-                      max={10}
-                      className="form-control"
-                      style={{ width: "70px" }}
-                      id=""
-                      onChange={(e) => setQuantity(e.target.value)}
-                      value={quantity}
-                    />
-                  </div>
-                  <div className="d-flex align-items-center gap-30 ms-5">
+                  {!alreadyAdded && (
+                    <>
+                      <h3 className="product-heading">Quantity :</h3>
+                      <div className="">
+                        <input
+                          type="number"
+                          name=""
+                          min={1}
+                          max={10}
+                          className="form-control"
+                          style={{ width: "70px" }}
+                          id=""
+                          onChange={(e) => setQuantity(e.target.value)}
+                          value={quantity}
+                        />
+                      </div>
+                    </>
+                  )}
+                  <div className="d-flex align-items-center gap-30">
                     <button
                       className="button border-0"
                       // data-bs-toggle="modal"
                       // data-bs-target="#staticBackdrop"
                       type="button"
-                      onClick={addToCart}
+                      onClick={() =>
+                        alreadyAdded ? navigate("/cart") : addToCart()
+                      }
                     >
-                      Add to Cart
+                      {alreadyAdded ? "Go To Cart" : "Add to Cart"}
                     </button>
-                    <button className="button signup">Buy It Now</button>
+                    {/* <button className="button signup">Buy It Now</button> */}
                   </div>
                 </div>
                 <div className="d-flex align-items-center gap-15">
