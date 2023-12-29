@@ -26,7 +26,7 @@ const removeProductFromCart = (id) => {
 
 const updateProductQuantityFromCart = (cartDetail) => {
   return api.put(
-    `update-cart-product-quantity/${cartDetail?.id}/${cartDetail?.quantity}`
+    `user/update-cart-product-quantity/${cartDetail?.id}/${cartDetail?.quantity}`
   )
 }
 

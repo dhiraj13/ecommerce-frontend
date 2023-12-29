@@ -6,7 +6,11 @@ import { Link } from "react-router-dom"
 import Container from "../components/Container"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
-import { getUserCart, removeProductFromCart } from "@features/user/userSlice"
+import {
+  getUserCart,
+  removeProductFromCart,
+  updateProductQuantityFromCart,
+} from "@features/user/userSlice"
 
 const Cart = () => {
   const dispatch = useDispatch()
@@ -33,7 +37,7 @@ const Cart = () => {
 
   const updateCartProduct = async (id, quantity) => {
     const { payload } = await dispatch(
-      updateCartProduct({
+      updateProductQuantityFromCart({
         id,
         quantity,
       })
