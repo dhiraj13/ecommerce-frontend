@@ -22,7 +22,7 @@ const Header = () => {
           Number(cartProducts?.[index]?.price)
       setTotal(sum)
     }
-  })
+  }, [cartProducts])
 
   return (
     <>
