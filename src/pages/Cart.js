@@ -11,16 +11,28 @@ import {
   removeProductFromCart,
   updateProductQuantityFromCart,
 } from "@features/user/userSlice"
+import { If, Then } from "react-if"
 
 const Cart = () => {
   const dispatch = useDispatch()
   const [quantity, setQuantity] = useState(null)
+  const [totalAmount, setTotalAmount] = useState(null)
   const authState = useSelector((state) => state.auth)
   const { cartProducts } = authState
 
   useEffect(() => {
     dispatch(getUserCart())
   }, [dispatch])
+
+  useEffect(() => {
+    let sum = 0
+    for (let index = 0; index < cartProducts?.length; index++) {
+      sum =
+        sum +
+        Number(cartProducts?.[index]?.quantity) * cartProducts?.[index]?.price
+      setTotalAmount(sum)
+    }
+  }, [cartProducts])
 
   const deleteCartProduct = async (id) => {
     const { payload } = await dispatch(removeProductFromCart(id))
@@ -120,13 +132,17 @@ const Cart = () => {
               <Link to="/product" className="button">
                 Continue To Shopping
               </Link>
-              <div className="d-flex flex-column align-items-end">
-                <h4>SubTotal: $ 1000</h4>
-                <p>Taxes and shipping calculated at checkout</p>
-                <Link to="/checkout" className="button">
-                  Checkout
-                </Link>
-              </div>
+              <If condition={totalAmount !== null}>
+                <Then>
+                  <div className="d-flex flex-column align-items-end">
+                    <h4>SubTotal: $ {totalAmount}</h4>
+                    <p>Taxes and shipping calculated at checkout</p>
+                    <Link to="/checkout" className="button">
+                      Checkout
+                    </Link>
+                  </div>
+                </Then>
+              </If>
             </div>
           </div>
         </div>
