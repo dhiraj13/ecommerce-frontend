@@ -46,15 +46,20 @@ const SingleProduct = () => {
       toast.error("Please Choose Color")
       return false
     } else {
-      dispatch(
-        addProductToCart({
-          productId: product?._id,
-          quantity,
-          color,
-          price: product?.price,
-        })
-      )
-      setAlreadyAdded(true)
+      const user = JSON.parse(localStorage.getItem("user"))
+      if (user?.token) {
+        dispatch(
+          addProductToCart({
+            productId: product?._id,
+            quantity,
+            color,
+            price: product?.price,
+          })
+        )
+        setAlreadyAdded(true)
+      } else {
+        navigate("/login")
+      }
     }
   }
   const props = {

@@ -3,16 +3,17 @@ import { NavLink, Link } from "react-router-dom"
 import { BsSearch } from "react-icons/bs"
 import compare from "../images/compare.svg"
 import wishlist from "../images/wishlist.svg"
-import user from "../images/user.svg"
+import userImg from "../images/user.svg"
 import cart from "../images/cart.svg"
 import menu from "../images/menu.svg"
 import { useDispatch, useSelector } from "react-redux"
+import { Else, If, Then } from "react-if"
 
 const Header = () => {
   const [total, setTotal] = useState(null)
   const dispatch = useDispatch()
   const authState = useSelector((state) => state.auth)
-  const { cartProducts } = authState
+  const { cartProducts, user } = authState
   useEffect(() => {
     let sum = 0
     for (let index = 0; index < cartProducts?.length; index++) {
@@ -98,10 +99,17 @@ const Header = () => {
                     to="/login"
                     className="d-flex align-items-center gap-10 text-white"
                   >
-                    <img src={user} alt="user" />
-                    <p className="mb-0">
-                      Login <br /> My Account
-                    </p>
+                    <img src={userImg} alt="user" />
+                    <If condition={user}>
+                      <Then>
+                        <p className="mb-0">Welcome {user?.firstname}</p>
+                      </Then>
+                      <Else>
+                        <p className="mb-0">
+                          Login <br /> My Account
+                        </p>
+                      </Else>
+                    </If>
                   </Link>
                 </div>
                 <div>

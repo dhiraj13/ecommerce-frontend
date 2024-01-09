@@ -91,7 +91,7 @@ export const updateProductQuantityFromCart = createAsyncThunk(
 )
 
 const initialState = {
-  user: "",
+  user: JSON.parse(localStorage.getItem("user")),
   cartProducts: [],
   deletedCartProduct: null,
   updatedCartProduct: null,
@@ -138,6 +138,7 @@ export const authSlice = createSlice({
         state.user = action.payload
         if (state.isSuccess) {
           localStorage.setItem("token", action.payload.token)
+          localStorage.setItem("user", JSON.stringify(action.payload))
           toast.info("User Logged In Successfully")
         }
       })

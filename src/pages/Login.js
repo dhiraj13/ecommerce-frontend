@@ -1,22 +1,32 @@
-import { Link } from "react-router-dom";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import Breadcrumb from "@components/Breadcrumb";
-import Meta from "@components/Meta";
-import Container from "@components/Container";
-import CustomInput from "@components/CustomInput";
-import { useDispatch } from "react-redux";
-import { loginUser } from "@features/user/userSlice";
+import { Link, useNavigate } from "react-router-dom"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import Breadcrumb from "@components/Breadcrumb"
+import Meta from "@components/Meta"
+import Container from "@components/Container"
+import CustomInput from "@components/CustomInput"
+import { useDispatch, useSelector } from "react-redux"
+import { loginUser } from "@features/user/userSlice"
+import { useEffect } from "react"
 
 const Login = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  const authState = useSelector((state) => state.auth)
+  const { isSuccess } = authState
+  const navigate = useNavigate()
 
   let schema = Yup.object().shape({
     email: Yup.string()
       .email("Email Should be Valid")
       .required("Email Address is Required"),
     password: Yup.string().required("Password is Required"),
-  });
+  })
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/")
+    }
+  }, [isSuccess])
 
   const formik = useFormik({
     initialValues: {
@@ -25,9 +35,9 @@ const Login = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(loginUser(values));
+      dispatch(loginUser(values))
     },
-  });
+  })
 
   return (
     <>
@@ -84,7 +94,7 @@ const Login = () => {
         </div>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
