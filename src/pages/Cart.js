@@ -12,6 +12,7 @@ import {
   updateProductQuantityFromCart,
 } from "@features/user/userSlice"
 import { If, Then } from "react-if"
+import styles from "./Cart.module.css"
 
 const Cart = () => {
   const dispatch = useDispatch()
@@ -81,8 +82,13 @@ const Cart = () => {
                   <div className="cart-col-1 gap-15 d-flex align-items-center">
                     <div className="w-25">
                       <img
-                        src={watch}
-                        className="img-fluid"
+                        src={
+                          item?.productId?.images &&
+                          item?.productId?.images?.length > 0
+                            ? item?.productId?.images?.[0]?.url
+                            : watch
+                        }
+                        className={`img-fluid ${styles.cartImage}`}
                         alt="product-img"
                       />
                     </div>
