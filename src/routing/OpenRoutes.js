@@ -6,10 +6,10 @@ export const OpenRoutes = ({ children }) => {
   return (
     <>
       <If condition={user?.token}>
-        <Navigate to="/" replace={true} />
-        <Else>
-          <Then>{children}</Then>
-        </Else>
+        <Then>
+          <Navigate to="/" replace={true} />
+        </Then>
+        <Else>{children}</Else>
       </If>
     </>
   )
