@@ -90,6 +90,17 @@ export const updateProductQuantityFromCart = createAsyncThunk(
   }
 )
 
+export const getUserOrders = createAsyncThunk(
+  "auth/get-user-orders",
+  async (_, thunkAPI) => {
+    try {
+      return await authService.getUserOrders()
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error)
+    }
+  }
+)
+
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")),
   cartProducts: [],
@@ -247,6 +258,76 @@ export const authSlice = createSlice({
         state.isSuccess = false
         state.message = action.error
         toast.error("Something Went Wrong!")
+      })
+      .addCase(getUserOrders.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getUserOrders.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.isError = false
+        // state.getOrderedProduct = action.payload
+        state.getOrderedProduct = {
+          orders: [
+            {
+              _id: "642da7147ebe3ece16b44141",
+              totalPrice: 230,
+              totalPriceAfterDiscount: 220,
+              orderStatus: "ordered",
+              orderItems: [
+                {
+                  product: {
+                    title:
+                      "MIYANI SALES Comfortable Pet Bathing Tool for Massager ShowerCleaningWashing SprayersDog Brush Grooming Gloves for Dog & Cat (Blue, Fits All)",
+                  },
+                  quantity: 1,
+                  price: 220,
+                  color: "red",
+                },
+              ],
+            },
+            {
+              _id: "643074fbc51ca7ecb78c40b5",
+              totalPrice: 900,
+              totalPriceAfterDiscount: 890,
+              orderStatus: "ordered",
+              orderItems: [
+                {
+                  product: {
+                    title:
+                      "MIYANI SALES Comfortable Pet Bathing Tool for Massager ShowerCleaningWashing SprayersDog Brush Grooming Gloves for Dog & Cat (Blue, Fits All)",
+                  },
+                  quantity: 2,
+                  price: 445,
+                  color: "red",
+                },
+              ],
+            },
+            {
+              _id: "643075a8c7e97e254e5d3088",
+              totalPrice: 900,
+              totalPriceAfterDiscount: 900,
+              orderStatus: "ordered",
+              orderItems: [
+                {
+                  product: {
+                    title:
+                      "MIYANI SALES Comfortable Pet Bathing Tool for Massager ShowerCleaningWashing SprayersDog Brush Grooming Gloves for Dog & Cat (Blue, Fits All)",
+                  },
+                  quantity: 2,
+                  price: 450,
+                  color: "red",
+                },
+              ],
+            },
+          ],
+        }
+      })
+      .addCase(getUserOrders.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.isSuccess = false
+        state.message = action.error
       })
   },
 })

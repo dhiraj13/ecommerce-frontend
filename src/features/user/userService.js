@@ -34,6 +34,10 @@ const createOrder = (orderDetail) => {
   return api.put(`user/cart/create-order`, orderDetail)
 }
 
+const getUserOrders = () => {
+  return api.get(`user/get-my-orders`).then((res) => res.data)
+}
+
 export const authService = {
   register,
   login,
@@ -43,4 +47,5 @@ export const authService = {
   removeProductFromCart,
   updateProductQuantityFromCart,
   createOrder,
+  getUserOrders,
 }
