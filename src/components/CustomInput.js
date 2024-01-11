@@ -1,5 +1,14 @@
 const CustomInput = (props) => {
-  const { type, name, placeholder, classname, value, onChange, onBlur } = props;
+  const {
+    type,
+    name,
+    placeholder,
+    classname,
+    value,
+    onChange,
+    onBlur,
+    disabled,
+  } = props
   return (
     <div>
       <input
@@ -10,9 +19,10 @@ const CustomInput = (props) => {
         value={value}
         onChange={onChange}
         onBlur={onBlur}
+        disabled={disabled}
       />
     </div>
-  );
-};
+  )
+}
 
-export default CustomInput;
+export default CustomInput

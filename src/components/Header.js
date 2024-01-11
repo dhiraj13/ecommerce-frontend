@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { NavLink, Link } from "react-router-dom"
+import { NavLink, Link, useNavigate } from "react-router-dom"
 import { BsSearch } from "react-icons/bs"
 import compare from "../images/compare.svg"
 import wishlist from "../images/wishlist.svg"
@@ -8,12 +8,19 @@ import cart from "../images/cart.svg"
 import menu from "../images/menu.svg"
 import { useDispatch, useSelector } from "react-redux"
 import { Else, If, Then } from "react-if"
+import { Typeahead } from "react-bootstrap-typeahead"
+import "react-bootstrap-typeahead/css/Typeahead.css"
 
 const Header = () => {
   const [total, setTotal] = useState(null)
+  const [paginate, setPaginate] = useState(true)
+  const [productOpt, setProductOpt] = useState([])
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const authState = useSelector((state) => state.auth)
   const { cartProducts, user } = authState
+  const productState = useSelector((state) => state.product)
+  const { products } = productState
   useEffect(() => {
     let sum = 0
     for (let index = 0; index < cartProducts?.length; index++) {
@@ -24,6 +31,24 @@ const Header = () => {
       setTotal(sum)
     }
   }, [cartProducts])
+
+  useEffect(() => {
+    let data = []
+    for (let i = 0; i < products?.length; i++) {
+      const element = products?.[i]
+      data.push({
+        id: i,
+        prod: element?._id,
+        name: element?.title,
+      })
+    }
+    setProductOpt(data)
+  }, [products])
+
+  const handleLogout = () => {
+    localStorage.clear()
+    window.location.reload()
+  }
 
   return (
     <>
@@ -38,8 +63,8 @@ const Header = () => {
             <div className="col-6">
               <p className="text-end text-white mb-0">
                 Hotline:{" "}
-                <a className="text-white" href="tel:+91 8264954234">
-                  +91 8264954234
+                <a className="text-white" href="tel:+977 9806633335">
+                  +977 9806633335
                 </a>
               </p>
             </div>
@@ -58,12 +83,17 @@ const Header = () => {
             </div>
             <div className="col-5">
               <div className="input-group">
-                <input
-                  type="text"
-                  className="form-control py-2"
-                  placeholder="Search Product Here..."
-                  aria-label="Search Product Here..."
-                  aria-describedby="basic-addon2"
+                <Typeahead
+                  id="search-product"
+                  onPaginate={() => console.log("Products List")}
+                  onChange={(selected) => {
+                    navigate(`/product/${selected?.[0]?.prod}`)
+                  }}
+                  options={productOpt}
+                  paginate={paginate}
+                  labelKey="name"
+                  minLength={2}
+                  placeholder="Search for Products here..."
                 />
                 <span className="input-group-text p-3" id="basic-addon2">
                   <BsSearch className="fs-6" />
@@ -96,7 +126,7 @@ const Header = () => {
                 </div>
                 <div>
                   <Link
-                    to="/login"
+                    to={user === null ? "/login" : "/my-profile"}
                     className="d-flex align-items-center gap-10 text-white"
                   >
                     <img src={userImg} alt="user" />
@@ -186,6 +216,16 @@ const Header = () => {
                     <NavLink className="text-white" to="/contact">
                       Contact
                     </NavLink>
+                    <If condition={user}>
+                      <Then>
+                        <button
+                          className="border border-0 bg-transparent text-white text-uppercase font-size-14"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </button>
+                      </Then>
+                    </If>
                   </div>
                 </div>
               </div>

@@ -38,6 +38,24 @@ const getUserOrders = () => {
   return api.get(`user/get-my-orders`).then((res) => res.data)
 }
 
+const updateProfile = (data) => {
+  return api.put(`user/edit-user`, data).then((res) => res.data)
+}
+
+const getUserDetail = (id) => {
+  return api.get(`user/${id}`).then((res) => res.data)
+}
+
+const forgotPassToken = (data) => {
+  return api.post(`user/forgot-password-token`, data).then((res) => res.data)
+}
+
+const resetPassword = (data) => {
+  return api
+    .put(`user/reset-password/${data?.token}`, { password: data?.password })
+    .then((res) => res.data)
+}
+
 export const authService = {
   register,
   login,
@@ -48,4 +66,8 @@ export const authService = {
   updateProductQuantityFromCart,
   createOrder,
   getUserOrders,
+  updateProfile,
+  getUserDetail,
+  forgotPassToken,
+  resetPassword,
 }

@@ -105,3 +105,11 @@ main::-webkit-scrollbar {
   color: red;
   font-size: 12px;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.font-size-14 {
+  font-size: 14px;
+}

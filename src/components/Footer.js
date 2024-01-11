@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { BsLinkedin, BsGithub, BsYoutube, BsInstagram } from "react-icons/bs";
-import newsletter from "../images/newsletter.png";
+import React from "react"
+import { Link } from "react-router-dom"
+import { BsLinkedin, BsGithub, BsYoutube, BsInstagram } from "react-icons/bs"
+import newsletter from "../images/newsletter.png"
 
 const Footer = () => {
   return (
@@ -40,7 +40,7 @@ const Footer = () => {
               <div>
                 <address className="text-white fs-6">
                   Talchikhel, Lalitpur, Bagmati <br />
-                  PinCode: 44600
+                  Pin Code: 44600
                 </address>
                 <a
                   href="tel:+977 9806633335"
@@ -123,7 +123,7 @@ const Footer = () => {
         </div>
       </footer>
     </>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

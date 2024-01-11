@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { BiArrowBack } from "react-icons/bi"
 import watch from "../images/watch.jpg"
 import Container from "../components/Container"
@@ -14,6 +14,7 @@ const Checkout = () => {
   const dispatch = useDispatch()
   const authState = useSelector((state) => state.auth)
   const { cartProducts } = authState
+  const navigate = useNavigate()
 
   let schema = Yup.object().shape({
     firstName: Yup.string().required("First Name is Required"),
@@ -62,7 +63,7 @@ const Checkout = () => {
   }, [cartProducts])
 
   const checkOutHandler = async () => {
-    alert("checked out successfully!")
+    navigate("/my-orders")
   }
 
   return (

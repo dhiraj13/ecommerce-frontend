@@ -26,6 +26,7 @@ import { PrivateRoutes } from "routing/PrivateRoutes"
 import "./App.css"
 import { OpenRoutes } from "routing/OpenRoutes"
 import Orders from "@pages/Orders"
+import Profile from "@pages/Profile"
 
 function App() {
   return (
@@ -53,6 +54,14 @@ function App() {
               element={
                 <PrivateRoutes>
                   <Orders />
+                </PrivateRoutes>
+              }
+            />
+            <Route
+              path="my-profile"
+              element={
+                <PrivateRoutes>
+                  <Profile />
                 </PrivateRoutes>
               }
             />
@@ -90,7 +99,7 @@ function App() {
                 </OpenRoutes>
               }
             />
-            <Route path="reset-password" element={<Resetpassword />} />
+            <Route path="reset-password/:token" element={<Resetpassword />} />
             <Route path="privacy-policy" element={<PrivacyPolicy />} />
             <Route path="refund-policy" element={<RefundPolicy />} />
             <Route path="shipping-policy" element={<ShippingPolicy />} />
