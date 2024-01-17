@@ -4,9 +4,9 @@ import { toast } from "react-toastify"
 
 export const getProducts = createAsyncThunk(
   "product/get-products",
-  async (_, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      return await productService.getProducts()
+      return await productService.getProducts(data)
     } catch (error) {
       return thunkAPI.rejectWithValue(error)
     }
@@ -29,6 +29,17 @@ export const addToWishlist = createAsyncThunk(
   async (prodId, thunkAPI) => {
     try {
       return await productService.addToWishlist(prodId)
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error)
+    }
+  }
+)
+
+export const rateProduct = createAsyncThunk(
+  "product/rating",
+  async (data, thunkAPI) => {
+    try {
+      return await productService.rateProduct(data)
     } catch (error) {
       return thunkAPI.rejectWithValue(error)
     }
@@ -94,6 +105,26 @@ export const productSlice = createSlice({
         state.product = action.payload
       })
       .addCase(getSingleProduct.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.isSuccess = false
+        state.message = action.error
+        if (state.isError) {
+          toast.error(action.error)
+        }
+      })
+      .addCase(rateProduct.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(rateProduct.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.isError = false
+        state.rating = action.payload
+        state.message = "Rating Added Successfully!"
+        toast.success("Rating Added Successfully!")
+      })
+      .addCase(rateProduct.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.isSuccess = false

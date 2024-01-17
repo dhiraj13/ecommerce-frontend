@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { Else, If, Then } from "react-if"
 import { Typeahead } from "react-bootstrap-typeahead"
 import "react-bootstrap-typeahead/css/Typeahead.css"
+import { getSingleProduct } from "@features/products/productSlice"
 
 const Header = () => {
   const [total, setTotal] = useState(null)
@@ -88,6 +89,7 @@ const Header = () => {
                   onPaginate={() => console.log("Products List")}
                   onChange={(selected) => {
                     navigate(`/product/${selected?.[0]?.prod}`)
+                    dispatch(getSingleProduct(selected?.[0]?.prod))
                   }}
                   options={productOpt}
                   paginate={paginate}
@@ -103,7 +105,7 @@ const Header = () => {
             <div className="col-5">
               <div className="header-upper-links d-flex align-items-center justify-content-between">
                 <div>
-                  <Link
+                  {/* <Link
                     to="/compare-product"
                     className="d-flex align-items-center gap-10 text-white"
                   >
@@ -111,7 +113,7 @@ const Header = () => {
                     <p className="mb-0">
                       Compare <br /> Products
                     </p>
-                  </Link>
+                  </Link> */}
                 </div>
                 <div>
                   <Link

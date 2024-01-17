@@ -11,26 +11,37 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import watch from "images/watch.jpg"
 import Container from "components/Container"
 import { useDispatch, useSelector } from "react-redux"
-import { getSingleProduct } from "@features/products/productSlice"
+import {
+  getProducts,
+  getSingleProduct,
+  rateProduct,
+} from "@features/products/productSlice"
 import { toast } from "react-toastify"
 import { addProductToCart, getUserCart } from "@features/user/userSlice"
+import { If, Then } from "react-if"
 
 const SingleProduct = () => {
   const [color, setColor] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [alreadyAdded, setAlreadyAdded] = useState(false)
+  const [orderedProduct, setorderedProduct] = useState(true)
+  const [popularProduct, setPopularProduct] = useState([])
+  const [star, setStar] = useState(null)
+  const [comment, setComment] = useState(null)
+
   const navigate = useNavigate()
 
   const { id } = useParams()
   const dispatch = useDispatch()
   const productState = useSelector((state) => state.product)
-  const { product } = productState
+  const { product, products, rating } = productState
   const authState = useSelector((state) => state.auth)
   const { cartProducts } = authState
 
   useEffect(() => {
     dispatch(getSingleProduct(id))
     dispatch(getUserCart())
+    dispatch(getProducts())
   }, [id, dispatch])
 
   useEffect(() => {
@@ -40,6 +51,23 @@ const SingleProduct = () => {
       }
     }
   }, [id, cartProducts])
+
+  useEffect(() => {
+    let data = []
+    for (let index = 0; index < products?.length; index++) {
+      const element = products?.[index]
+      if (element?.tags === "popular") {
+        data.push(element)
+      }
+      setPopularProduct(data)
+    }
+  }, [products])
+
+  useEffect(() => {
+    if (rating) {
+      dispatch(getSingleProduct(id))
+    }
+  }, [dispatch, id, rating])
 
   const addToCart = () => {
     if (color === null) {
@@ -62,6 +90,26 @@ const SingleProduct = () => {
       }
     }
   }
+
+  const addRatingToProduct = () => {
+    if (star === null) {
+      toast.error("Please add star rating")
+      return false
+    } else if (comment === null) {
+      toast.error("Please Write Review About the Product.")
+      return false
+    } else {
+      dispatch(
+        rateProduct({
+          star,
+          comment,
+          prodId: id,
+        })
+      )
+      return false
+    }
+  }
+
   const props = {
     width: 594,
     height: 600,
@@ -72,7 +120,6 @@ const SingleProduct = () => {
       : "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg",
   }
 
-  const [orderedProduct, setorderedProduct] = useState(true)
   const copyToClipboard = (text) => {
     console.log("text", text)
     var textField = document.createElement("textarea")
@@ -82,11 +129,11 @@ const SingleProduct = () => {
     document.execCommand("copy")
     textField.remove()
   }
-  const closeModal = () => {}
+
   return (
     <>
-      <Meta title={"Product Name"} />
-      <Breadcrumb title="Product Name" />
+      <Meta title={product?.title} />
+      <Breadcrumb title={product?.title} />
       <Container class1="main-product-wrapper py-5 home-wrapper-2">
         <div className="row">
           <div className="col-6">
@@ -283,51 +330,57 @@ const SingleProduct = () => {
               </div>
               <div className="review-form py-4">
                 <h4>Write a Review</h4>
-                <form action="" className="d-flex flex-column gap-15">
-                  <div>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      value={4}
-                      edit={true}
-                      activeColor="#ffd700"
-                    />
-                  </div>
-                  <div>
-                    <textarea
-                      name=""
-                      id=""
-                      className="w-100 form-control"
-                      cols="30"
-                      rows="4"
-                      placeholder="Comments"
-                    ></textarea>
-                  </div>
-                  <div className="d-flex justify-content-end">
-                    <button className="button border-0">Submit Review</button>
-                  </div>
-                </form>
+                <div>
+                  <ReactStars
+                    count={5}
+                    size={24}
+                    value={star}
+                    edit={true}
+                    activeColor="#ffd700"
+                    onChange={(e) => setStar(e)}
+                  />
+                </div>
+                <div>
+                  <textarea
+                    name=""
+                    id=""
+                    className="w-100 form-control"
+                    cols="30"
+                    rows="4"
+                    placeholder="Comments"
+                    onChange={(e) => setComment(e.target.value)}
+                  ></textarea>
+                </div>
+                <div className="d-flex justify-content-end mt-3">
+                  <button
+                    className="button border-0"
+                    onClick={addRatingToProduct}
+                    type="button"
+                  >
+                    Submit Review
+                  </button>
+                </div>
               </div>
               <div className="reviews mt-4">
-                <div className="review">
-                  <div className="d-flex gap-10 align-items-center">
-                    <h6 className="mb-0">Navdeep</h6>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      value={4}
-                      edit={false}
-                      activeColor="#ffd700"
-                    />
-                  </div>
-                  <p className="mt-3">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Consectetur fugit ut excepturi quos. Id reprehenderit
-                    voluptatem placeat consequatur suscipit ex. Accusamus dolore
-                    quisquam deserunt voluptate, sit magni perspiciatis quas
-                    iste?
-                  </p>
-                </div>
+                <If condition={product?.ratings}>
+                  <Then>
+                    {product?.ratings?.map((rating, index) => (
+                      <div className="review" key={index}>
+                        <div className="d-flex gap-10 align-items-center">
+                          <h6 className="mb-0">Navdeep</h6>
+                          <ReactStars
+                            count={5}
+                            size={24}
+                            value={rating?.star}
+                            edit={false}
+                            activeColor="#ffd700"
+                          />
+                        </div>
+                        <p className="mt-3">{rating?.comment}</p>
+                      </div>
+                    ))}
+                  </Then>
+                </If>
               </div>
             </div>
           </div>
@@ -340,64 +393,9 @@ const SingleProduct = () => {
           </div>
         </div>
         <div className="row">
-          <ProductCard />
+          <ProductCard data={popularProduct} />
         </div>
       </Container>
-
-      <div
-        className="modal fade"
-        id="staticBackdrop"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered ">
-          <div className="modal-content">
-            <div className="modal-header py-0 border-0">
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body py-0">
-              <div className="d-flex align-items-center">
-                <div className="flex-grow-1 w-50">
-                  <img src={watch} className="img-fluid" alt="product imgae" />
-                </div>
-                <div className="d-flex flex-column flex-grow-1 w-50">
-                  <h6 className="mb-3">Apple Watch</h6>
-                  <p className="mb-1">Quantity: asgfd</p>
-                  <p className="mb-1">Color: asgfd</p>
-                  <p className="mb-1">Size: asgfd</p>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer border-0 py-0 justify-content-center gap-30">
-              <button type="button" className="button" data-bs-dismiss="modal">
-                View My Cart
-              </button>
-              <button type="button" className="button signup">
-                Checkout
-              </button>
-            </div>
-            <div className="d-flex justify-content-center py-3">
-              <Link
-                className="text-dark"
-                to="/product"
-                onClick={() => {
-                  closeModal()
-                }}
-              >
-                Continue To Shopping
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   )
 }

@@ -1,7 +1,16 @@
 import api from "api/api"
 
-const getProducts = (userData) => {
-  return api.get("product", userData).then((res) => res.data)
+const getProducts = (data) => {
+  const { brand, category, minPrice, maxPrice, sort, tag } = data
+  return api
+    .get(
+      `product?${brand ? `brand=${brand}&` : ""}${
+        category ? `category=${category}&` : ""
+      }${minPrice ? `price[gte]=${minPrice}&` : ""}${
+        maxPrice ? `price[lte]=${maxPrice}&` : ""
+      }${sort ? `sort=${sort}&` : ""}${tag ? `tag=${tag}&` : ""}`
+    )
+    .then((res) => res.data)
 }
 
 const getSingleProduct = (id) => {
@@ -12,8 +21,13 @@ const addToWishlist = (prodId) => {
   return api.put("product/wishlist", { prodId }).then((res) => res.data)
 }
 
+const rateProduct = (data) => {
+  return api.put("product/rating", data).then((res) => res.data)
+}
+
 export const productService = {
   getProducts,
   getSingleProduct,
   addToWishlist,
+  rateProduct,
 }
