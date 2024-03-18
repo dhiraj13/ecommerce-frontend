@@ -6,11 +6,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
+import { Else, If, Then } from "react-if"
+import PayPal from "@components/PayPal"
 
 const Checkout = () => {
   const [totalAmount, setTotalAmount] = useState(null)
   const [shippingInfo, setShippingInfo] = useState(null)
-  const [cartProductState, setCartProductState] = useState([])
+  const [cartProductsList, setCartProductsList] = useState([])
+  const [showPaypal, setShowPaypal] = useState(false)
   const dispatch = useDispatch()
   const authState = useSelector((state) => state.auth)
   const { cartProducts } = authState
@@ -58,12 +61,13 @@ const Checkout = () => {
         color: cartProducts?.[index]?.color?._id,
         price: cartProducts?.[index]?.price,
       })
-      setCartProductState(items)
+      setCartProductsList(items)
     }
   }, [cartProducts])
 
   const checkOutHandler = async () => {
-    navigate("/my-orders")
+    // navigate("/my-orders")
+    setShowPaypal(true)
   }
 
   return (
@@ -242,9 +246,22 @@ const Checkout = () => {
                     <Link to="/cart" className="button">
                       Continue to Shipping
                     </Link>
-                    <button className="button" type="submit">
-                      Place Order
-                    </button>
+                    <If condition={showPaypal}>
+                      <Then>
+                        <PayPal
+                          orderDetail={{
+                            totalAmount,
+                            shippingInfo,
+                            cartProductsList,
+                          }}
+                        />
+                      </Then>
+                      <Else>
+                        <button className="button" type="submit">
+                          Place Order
+                        </button>
+                      </Else>
+                    </If>
                   </div>
                 </div>
               </form>

@@ -36,9 +36,9 @@ const Orders = () => {
             </div>
           </div>
           <div className="col-12 mt-3">
-            <If condition={getOrderedProduct?.orders}>
+            <If condition={getOrderedProduct?.length > 0}>
               <Then>
-                {getOrderedProduct?.orders?.map((orderedProduct, index) => (
+                {getOrderedProduct?.map((orderedProduct, index) => (
                   <div
                     style={{ backgroundColor: "#febd69" }}
                     className="row pt-3 my-3"

@@ -48,9 +48,13 @@ export const addProductToCart = createAsyncThunk(
 
 export const createOrder = createAsyncThunk(
   "auth/create-order",
-  async (orderDetail, thunkAPI) => {
+  async ({ orderDetail, cb }, thunkAPI) => {
     try {
-      return await authService.createOrder(orderDetail)
+      const res = await authService.createOrder(orderDetail)
+      console.log({ res })
+      if (res?.status === 200) {
+        cb?.()
+      }
     } catch (error) {
       return thunkAPI.rejectWithValue(error)
     }
@@ -73,6 +77,20 @@ export const removeProductFromCart = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       return await authService.removeProductFromCart(id)
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error)
+    }
+  }
+)
+
+export const removeProductsFromCart = createAsyncThunk(
+  "auth/delete-cart-products",
+  async (cb, thunkAPI) => {
+    try {
+      const res = await authService.removeProductsFromCart()
+      if (res?.status === 200) {
+        cb?.()
+      }
     } catch (error) {
       return thunkAPI.rejectWithValue(error)
     }
@@ -150,6 +168,7 @@ const initialState = {
   userDetail: null,
   cartProducts: [],
   deletedCartProduct: null,
+  deletedCartProducts: null,
   updatedCartProduct: null,
   isError: false,
   isSuccess: false,
@@ -270,6 +289,23 @@ export const authSlice = createSlice({
         state.message = action.error
         toast.error("Something Went Wrong!")
       })
+      .addCase(removeProductsFromCart.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(removeProductsFromCart.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.isError = false
+        state.deletedCartProducts = action.payload
+        toast.success("Products Deleted From Cart Successfully!")
+      })
+      .addCase(removeProductsFromCart.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.isSuccess = false
+        state.message = action.error
+        toast.error("Something Went Wrong!")
+      })
       .addCase(updateProductQuantityFromCart.pending, (state) => {
         state.isLoading = true
       })
@@ -311,62 +347,7 @@ export const authSlice = createSlice({
         state.isLoading = false
         state.isSuccess = true
         state.isError = false
-        // state.getOrderedProduct = action.payload
-        state.getOrderedProduct = {
-          orders: [
-            {
-              _id: "642da7147ebe3ece16b44141",
-              totalPrice: 230,
-              totalPriceAfterDiscount: 220,
-              orderStatus: "ordered",
-              orderItems: [
-                {
-                  product: {
-                    title:
-                      "MIYANI SALES Comfortable Pet Bathing Tool for Massager ShowerCleaningWashing SprayersDog Brush Grooming Gloves for Dog & Cat (Blue, Fits All)",
-                  },
-                  quantity: 1,
-                  price: 220,
-                  color: "red",
-                },
-              ],
-            },
-            {
-              _id: "643074fbc51ca7ecb78c40b5",
-              totalPrice: 900,
-              totalPriceAfterDiscount: 890,
-              orderStatus: "ordered",
-              orderItems: [
-                {
-                  product: {
-                    title:
-                      "MIYANI SALES Comfortable Pet Bathing Tool for Massager ShowerCleaningWashing SprayersDog Brush Grooming Gloves for Dog & Cat (Blue, Fits All)",
-                  },
-                  quantity: 2,
-                  price: 445,
-                  color: "red",
-                },
-              ],
-            },
-            {
-              _id: "643075a8c7e97e254e5d3088",
-              totalPrice: 900,
-              totalPriceAfterDiscount: 900,
-              orderStatus: "ordered",
-              orderItems: [
-                {
-                  product: {
-                    title:
-                      "MIYANI SALES Comfortable Pet Bathing Tool for Massager ShowerCleaningWashing SprayersDog Brush Grooming Gloves for Dog & Cat (Blue, Fits All)",
-                  },
-                  quantity: 2,
-                  price: 450,
-                  color: "red",
-                },
-              ],
-            },
-          ],
-        }
+        state.getOrderedProduct = action.payload
       })
       .addCase(getUserOrders.rejected, (state, action) => {
         state.isLoading = false

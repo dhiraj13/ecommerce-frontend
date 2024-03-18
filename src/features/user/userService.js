@@ -24,6 +24,10 @@ const removeProductFromCart = (id) => {
   return api.delete(`user/delete-cart-product/${id}`)
 }
 
+const removeProductsFromCart = () => {
+  return api.delete(`user/delete-cart-products`).then((res) => res)
+}
+
 const updateProductQuantityFromCart = (cartDetail) => {
   return api.put(
     `user/update-cart-product-quantity/${cartDetail?.id}/${cartDetail?.quantity}`
@@ -31,7 +35,7 @@ const updateProductQuantityFromCart = (cartDetail) => {
 }
 
 const createOrder = (orderDetail) => {
-  return api.put(`user/cart/create-order`, orderDetail)
+  return api.post(`user/cart/create-order`, orderDetail).then((res) => res)
 }
 
 const getUserOrders = () => {
@@ -63,6 +67,7 @@ export const authService = {
   addToCart,
   getCart,
   removeProductFromCart,
+  removeProductsFromCart,
   updateProductQuantityFromCart,
   createOrder,
   getUserOrders,
