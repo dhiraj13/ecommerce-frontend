@@ -2,7 +2,10 @@ import axios from "axios"
 // Default config for the axios instance
 const axiosParams = {
   // Set different base URL based on the environment
-  baseURL: "http://localhost:5000/api/",
+  baseURL:
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:5000/api/"
+      : "https://msrd-ecommerce-backend.vercel.app/api/",
 }
 
 // Create axios instance with default params
