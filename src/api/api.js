@@ -5,7 +5,7 @@ const axiosParams = {
   baseURL:
     process.env.NODE_ENV === "development"
       ? "http://localhost:5000/api/"
-      : "https://msrd-ecommerce-backend.vercel.app/api/",
+      : "https://ecommerce-backend-o3p1.onrender.com/api/",
 }
 
 // Create axios instance with default params
